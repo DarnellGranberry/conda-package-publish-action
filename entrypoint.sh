@@ -23,8 +23,8 @@ build_package(){
 
 upload_package(){
     export ANACONDA_API_TOKEN=$INPUT_ANACONDATOKEN
-    anaconda upload --label main ./*.tar.bz2
-    #anaconda upload --label main ./noarch/topaz-0.2.5a-py_0.tar.bz2 #original line
+    #anaconda upload --label main ./*.tar.bz2
+    anaconda upload --label main ./noarch/topaz-0.2.5a-py_0.tar.bz2 #original line
     #anaconda upload --label main linux-64/*.tar.bz2
     #anaconda upload --label main osx-64/*.tar.bz2
 }
