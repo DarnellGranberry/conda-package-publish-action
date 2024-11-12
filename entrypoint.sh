@@ -4,8 +4,8 @@ set -ex
 set -o pipefail
 
 go_to_build_dir() {
-    if [ ! -z $INPUT_SUBDIR ]; then
-        cd $INPUT_SUBDIR
+    if [ ! -z "$INPUT_SUBDIR" ]; then
+        cd "$INPUT_SUBDIR"
     fi
 }
 
@@ -17,16 +17,15 @@ check_if_meta_yaml_file_exists() {
 }
 
 build_package(){
-    conda build -c conda-forge -c bioconda --output-folder . .
-    #conda convert -p osx-64 linux-64/*.tar.bz2
+    conda build -c conda-forge -c bioconda --output-folder build_output .
+    #conda convert -p osx-64 build_output/linux-64/*.tar.bz2
 }
 
 upload_package(){
-    export ANACONDA_API_TOKEN=$INPUT_ANACONDATOKEN
-    #anaconda upload --label main ./*.tar.bz2
-    anaconda upload --label main ./noarch/topaz-0.2.5-py_0.tar.bz2 #original line
-    #anaconda upload --label main linux-64/*.tar.bz2
-    #anaconda upload --label main osx-64/*.tar.bz2
+    export ANACONDA_API_TOKEN="$INPUT_ANACONDATOKEN"
+    anaconda upload --label main build_output/noarch/*.tar.bz2 || echo "Upload failed for noarch"
+    #anaconda upload --label main build_output/linux-64/*.tar.bz2
+    #anaconda upload --label main build_output/osx-64/*.tar.bz2
 }
 
 go_to_build_dir
