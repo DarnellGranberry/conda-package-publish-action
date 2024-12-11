@@ -17,7 +17,7 @@ check_if_meta_yaml_file_exists() {
 }
 
 build_package(){
-    conda build -c conda-forge -c bioconda --output-folder build_output .
+    conda build -c defaults -c conda-forge -c bioconda -c pytorch --output-folder build_output .
     #conda convert -p osx-64 build_output/linux-64/*.tar.bz2
 }
 
