@@ -47,4 +47,4 @@ jobs:
 2. Add it to the Secrets of the Github repository as `ANACONDA_TOKEN`
 
 ### Build Channels
-By Default, this Github Action will search for conda build dependancies (on top of the standard channels) in `conda-forge` and `bioconda`
+This GitHub Action looks for build dependencies in `conda-forge` only. It builds a `noarch` package and fails if the upload fails.

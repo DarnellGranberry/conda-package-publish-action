@@ -17,15 +17,21 @@ check_if_meta_yaml_file_exists() {
 }
 
 build_package(){
-    conda build -c defaults -c conda-forge -c bioconda -c pytorch --output-folder build_output .
-    #conda convert -p osx-64 build_output/linux-64/*.tar.bz2
+    # conda-forge alone carries the build dependencies (including pytorch and torchvision); mixing in
+    # defaults, bioconda and the retired pytorch channel made the dependency solve far more expensive
+    conda build -c conda-forge --output-folder build_output .
 }
 
 upload_package(){
     export ANACONDA_API_TOKEN="$INPUT_ANACONDATOKEN"
-    anaconda upload --label main build_output/noarch/*.tar.bz2 || echo "Upload failed for noarch"
-    #anaconda upload --label main build_output/linux-64/*.tar.bz2
-    #anaconda upload --label main build_output/osx-64/*.tar.bz2
+    # conda-build writes .tar.bz2 or .conda depending on its version; a failed upload fails the job
+    shopt -s nullglob
+    packages=(build_output/noarch/*.tar.bz2 build_output/noarch/*.conda)
+    if [ ${#packages[@]} -eq 0 ]; then
+        echo "No noarch package was built in build_output/noarch."
+        exit 1
+    fi
+    anaconda upload --label main "${packages[@]}"
 }
 
 go_to_build_dir
